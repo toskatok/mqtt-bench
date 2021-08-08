@@ -1,0 +1,11 @@
+---
+version: '3.7'
+services:
+  emqx:
+    image: emqx/emqx:latest
+    environment:
+      EMQX_NAME: emqx
+      EMQX_LOADED_PLUGINS: "emqx_management,emqx_dashboard"
+    ports:
+      - 1883:1883
+      - 18083:18083
