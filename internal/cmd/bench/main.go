@@ -2,16 +2,15 @@ package bench
 
 import (
 	"fmt"
-	"sync"
 
 	"github.com/1995parham/mqtt-bench/internal/option"
 	"github.com/1995parham/mqtt-bench/internal/publish"
 	mqtt "github.com/eclipse/paho.mqtt.golang"
-	"github.com/pterm/pterm"
 	"github.com/spf13/cobra"
+	"go.uber.org/zap"
 )
 
-func main(opts option.Options) {
+func main(opts option.Options, logger *zap.Logger) {
 	clients := make([]mqtt.Client, opts.Clients)
 
 	for i := range clients {
@@ -31,30 +30,23 @@ func main(opts option.Options) {
 		clients[i] = mqtt.NewClient(options)
 
 		if token := clients[i].Connect(); token.Wait() && token.Error() != nil {
-			pterm.Fatal.Printf("cannot connect to %s %s\n", opts.Broker, token.Error().Error())
+			logger.Fatal("cannot connect", zap.String("broker", opts.Broker), zap.Error(token.Error()))
 		}
 	}
 
-	wg := new(sync.WaitGroup)
-
-	for _, client := range clients {
-		wg.Add(1)
-
-		publish.Publish(client, opts, wg)
-	}
-
-	wg.Wait()
+	p := publish.New(logger, opts)
+	p.Publish(clients)
 }
 
 // Register benchmark command.
-func Register(root *cobra.Command, opts option.Options) {
+func Register(root *cobra.Command, opts option.Options, logger *zap.Logger) {
 	// nolint: exhaustivestruct
 	cmd :=
 		&cobra.Command{
 			Use:   "bench",
 			Short: "",
 			Run: func(cmd *cobra.Command, args []string) {
-				main(opts)
+				main(opts, logger)
 			},
 		}
 	root.AddCommand(cmd)

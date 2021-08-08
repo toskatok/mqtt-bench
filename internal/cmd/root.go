@@ -1,11 +1,12 @@
 package cmd
 
 import (
+	"log"
 	"os"
 
 	"github.com/1995parham/mqtt-bench/internal/cmd/bench"
+	"github.com/1995parham/mqtt-bench/internal/logger"
 	"github.com/1995parham/mqtt-bench/internal/option"
-	"github.com/pterm/pterm"
 	"github.com/spf13/cobra"
 )
 
@@ -22,6 +23,8 @@ func Execute() {
 		Use: "mqtt-bench",
 	}
 
+	var level string
+
 	var options option.Options
 
 	root.Flags().StringVarP(&options.Broker, "broker", "b",
@@ -31,11 +34,14 @@ func Execute() {
 		option.DefaultClients, "number of simultaneous clients")
 	root.Flags().IntVarP(&options.Count, "count", "t",
 		option.DefaultCounts, "number of send messages")
+	root.Flags().StringVarP(&level, "level", "l", "info", "set the logger level")
 
-	bench.Register(root, options)
+	logger := logger.New(level)
+
+	bench.Register(root, options, logger)
 
 	if err := root.Execute(); err != nil {
-		pterm.Error.Printf("failed to execute root command: %s", err.Error())
+		log.Printf("failed to execute root command: %s", err.Error())
 		os.Exit(ExitFailure)
 	}
 }
