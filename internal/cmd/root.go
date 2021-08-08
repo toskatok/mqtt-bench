@@ -23,6 +23,7 @@ func Execute() {
 	}
 
 	var level string
+
 	root.PersistentFlags().StringVarP(&level, "level", "l", "info", "set the logger level")
 	logger := logger.New(level)
 
