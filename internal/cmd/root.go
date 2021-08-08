@@ -3,6 +3,7 @@ package cmd
 import (
 	"os"
 
+	"github.com/1995parham/mqtt-bench/internal/cmd/bench"
 	"github.com/1995parham/mqtt-bench/internal/option"
 	"github.com/pterm/pterm"
 	"github.com/spf13/cobra"
@@ -28,6 +29,8 @@ func Execute() {
 	root.Flags().BoolVarP(&options.Retain, "retain", "r", false, "retain")
 	root.Flags().IntVarP(&options.Clients, "clients", "c",
 		option.DefaultClients, "number of simultaneous clients")
+
+	bench.Register(root, options)
 
 	if err := root.Execute(); err != nil {
 		pterm.Error.Printf("failed to execute root command: %s", err.Error())
