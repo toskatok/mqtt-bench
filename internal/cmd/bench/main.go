@@ -6,6 +6,7 @@ import (
 	"github.com/1995parham/mqtt-bench/internal/option"
 	"github.com/1995parham/mqtt-bench/internal/publish"
 	mqtt "github.com/eclipse/paho.mqtt.golang"
+	"github.com/pterm/pterm"
 	"github.com/spf13/cobra"
 	"go.uber.org/zap"
 )
@@ -39,15 +40,27 @@ func main(opts option.Options, logger *zap.Logger) {
 }
 
 // Register benchmark command.
-func Register(root *cobra.Command, opts option.Options, logger *zap.Logger) {
+func Register(root *cobra.Command, logger *zap.Logger) {
+	var opts option.Options
+
 	// nolint: exhaustivestruct
 	cmd :=
 		&cobra.Command{
 			Use:   "bench",
 			Short: "",
 			Run: func(cmd *cobra.Command, args []string) {
+				pterm.Info.Printf("loaded configuration %+v\n", opts)
+
 				main(opts, logger)
 			},
 		}
+
+	cmd.Flags().StringVarP(&opts.Broker, "broker", "b",
+		"tcp://127.0.0.1:1883", "mqtt broker e.g. tcp://127.0.0.1:1883")
+	cmd.Flags().BoolVarP(&opts.Retain, "retain", "r", false, "retain")
+	cmd.Flags().IntVarP(&opts.Clients, "clients", "c",
+		option.DefaultClients, "number of simultaneous clients")
+	cmd.Flags().IntVarP(&opts.Count, "count", "n",
+		option.DefaultCounts, "number of send messages, use 0 for infinite number of messages")
 	root.AddCommand(cmd)
 }
