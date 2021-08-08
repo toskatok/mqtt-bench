@@ -31,7 +31,7 @@ func main(opts option.Options) {
 		clients[i] = mqtt.NewClient(options)
 
 		if token := clients[i].Connect(); token.Wait() && token.Error() != nil {
-			pterm.Fatal.Printf("cannot connect to %s %s", opts.Broker, token.Error().Error())
+			pterm.Fatal.Printf("cannot connect to %s %s\n", opts.Broker, token.Error().Error())
 		}
 	}
 

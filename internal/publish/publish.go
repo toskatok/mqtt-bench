@@ -20,11 +20,11 @@ func Publish(client mqtt.Client, opts option.Options, wg *sync.WaitGroup) {
 		message := make([]byte, opts.MessageSize)
 
 		if token := client.Publish(topic, opts.Qos, opts.Retain, message); token.Wait() && token.Error() != nil {
-			pterm.Error.Printf("publish on %s failed %s", topic, token.Error().Error())
+			pterm.Error.Printf("publish on %s failed %s\n", topic, token.Error().Error())
 		}
 
 		if index%10 == 0 {
-			pterm.Info.Printf("publish %d message on %s", index, topic)
+			pterm.Info.Printf("publish %d message on %s\n", index, topic)
 		}
 
 		if opts.IntervalTime > 0 {

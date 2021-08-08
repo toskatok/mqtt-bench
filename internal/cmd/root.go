@@ -29,6 +29,8 @@ func Execute() {
 	root.Flags().BoolVarP(&options.Retain, "retain", "r", false, "retain")
 	root.Flags().IntVarP(&options.Clients, "clients", "c",
 		option.DefaultClients, "number of simultaneous clients")
+	root.Flags().IntVarP(&options.Count, "count", "t",
+		option.DefaultCounts, "number of send messages")
 
 	bench.Register(root, options)
 

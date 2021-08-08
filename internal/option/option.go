@@ -17,6 +17,7 @@ type Options struct {
 
 const (
 	DefaultClients = 10
+	DefaultCounts  = 1000
 
 	DefaultTopic = "/mqtt-bench/benchmark"
 )
