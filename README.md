@@ -1,2 +1,3 @@
 # mqtt-bench
-Cloud friendly mqtt benchmark with k8s support
+## Introduction
+There are many mqtt benchmark applications but they are not cloud friendly and don't have even docker image.
