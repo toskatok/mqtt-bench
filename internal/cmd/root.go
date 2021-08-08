@@ -33,7 +33,7 @@ func Execute() {
 	root.Flags().IntVarP(&options.Clients, "clients", "c",
 		option.DefaultClients, "number of simultaneous clients")
 	root.Flags().IntVarP(&options.Count, "count", "t",
-		option.DefaultCounts, "number of send messages")
+		option.DefaultCounts, "number of send messages, use 0 for infinite number of messages")
 	root.Flags().StringVarP(&level, "level", "l", "info", "set the logger level")
 
 	logger := logger.New(level)

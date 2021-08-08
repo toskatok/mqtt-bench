@@ -37,7 +37,11 @@ func (p *Publisher) Publish(clients []mqtt.Client) {
 
 // publish is called on a goroutine to publish messages.
 func (p *Publisher) publish(client mqtt.Client, wg *sync.WaitGroup) {
-	for index := 0; index < p.opts.Count; index++ {
+	index := 0
+
+	defer wg.Done()
+
+	for {
 		options := client.OptionsReader()
 
 		topic := fmt.Sprintf("%s/%s", option.DefaultTopic, options.ClientID())
@@ -46,7 +50,10 @@ func (p *Publisher) publish(client mqtt.Client, wg *sync.WaitGroup) {
 
 		if token := client.Publish(topic, p.opts.Qos, p.opts.Retain, message); token.Wait() && token.Error() != nil {
 			p.logger.Error("publish failed", zap.String("topic", topic), zap.Error(token.Error()))
+
+			continue
 		}
+		index++
 
 		if index%10 == 0 {
 			p.logger.Info("publish message", zap.Int("count", index), zap.String("topic", topic))
@@ -55,7 +62,9 @@ func (p *Publisher) publish(client mqtt.Client, wg *sync.WaitGroup) {
 		if p.opts.IntervalTime > 0 {
 			time.Sleep(time.Duration(p.opts.IntervalTime) * time.Millisecond)
 		}
-	}
 
-	wg.Done()
+		if index == p.opts.Count {
+			return
+		}
+	}
 }
