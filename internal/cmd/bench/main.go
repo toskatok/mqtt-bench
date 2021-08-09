@@ -62,5 +62,10 @@ func Register(root *cobra.Command, logger *zap.Logger) {
 		option.DefaultClients, "number of simultaneous clients")
 	cmd.Flags().IntVarP(&opts.Count, "count", "n",
 		option.DefaultCounts, "number of send messages, use 0 for infinite number of messages")
+	cmd.Flags().StringVarP(&opts.Username, "username", "u",
+		"", "username for connecting to mqtt broker")
+	cmd.Flags().StringVarP(&opts.Password, "password", "p",
+		"", "password for connecting to mqtt broker")
+
 	root.AddCommand(cmd)
 }
