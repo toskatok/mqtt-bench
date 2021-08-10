@@ -5,6 +5,7 @@ import (
 
 	"github.com/1995parham/mqtt-bench/internal/option"
 	"github.com/1995parham/mqtt-bench/internal/publish"
+	"github.com/1995parham/mqtt-bench/internal/subscribe"
 	mqtt "github.com/eclipse/paho.mqtt.golang"
 	"github.com/pterm/pterm"
 	"github.com/spf13/cobra"
@@ -35,7 +36,10 @@ func main(opts option.Options, logger *zap.Logger) {
 		}
 	}
 
-	p := publish.New(logger, opts)
+	s := subscribe.New(logger.Named("subscribe"), opts)
+	s.Subscribe(clients)
+
+	p := publish.New(logger.Named("publish"), opts)
 	p.Publish(clients)
 }
 
