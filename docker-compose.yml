@@ -5,7 +5,16 @@ services:
     image: emqx/emqx:latest
     environment:
       EMQX_NAME: emqx
-      EMQX_LOADED_PLUGINS: "emqx_management,emqx_dashboard"
+      EMQX_LOADED_PLUGINS: "emqx_management,emqx_dashboard,emqx_auth_jwt,emqx_auth_http"
+      EMQX_ALLOW_ANONYMOUS: "false"
+      EMQX_ACL_NOMATCH: "deny"
+      EMQX_DENY_ACTION: "disconnect"
+      EMQX_LISTENER__TCP__INTERNAL: "11883"
+      EMQX_ZONE__INTERNAL__ALLOW_ANONYMOUS: "true"
+      EMQX_ZONE__INTERNAL__ENABLE_ACL: "off"
+      EMQX_AUTH__JWT__FROM: "username"
+      EMQX_AUTH__JWT__SECRET: "secret"
     ports:
       - 1883:1883
+      - 11883:11883
       - 18083:18083
